@@ -1072,10 +1072,10 @@ class ProfileAPIsTestCase(TestCase):
         self.assertEqual(donatorProfile_2.birth_date, datetime.date(2000, 10, 23))
 
     def test_api_userBio(self):
-        response_1 = client_post('UserBio', {})
-        response_2 = client_post('UserBio', {"username": "Nobody"})
-        response_3 = client_post('UserBio', {"username": "superAdmin"})
-        response_4 = client_post('UserBio', {"username": "admin"})
+        response_1 = client_get('UserBio', {})
+        response_2 = client_get('UserBio', {"username": "Nobody"})
+        response_3 = client_get('UserBio', {"username": "superAdmin"})
+        response_4 = client_get('UserBio', {"username": "admin"})
         donatorUser_2 = User.objects.get(username="donator_2")
         donatorProfile_2 = UserProfile.objects.get(user=donatorUser_2)
         donatorProfile_2.first_name = "donator 2 first name"
@@ -1087,11 +1087,11 @@ class ProfileAPIsTestCase(TestCase):
         needyProfile_1.last_name = "needy 1 last name"
         needyProfile_1.verified = 1
         needyProfile_1.save()
-        response_5 = client_post('UserBio', {"username": "donator_2"})
-        response_6 = client_post('UserBio', {"username": "needy_1"})
+        response_5 = client_get('UserBio', {"username": "donator_2"})
+        response_6 = client_get('UserBio', {"username": "needy_1"})
         response_1_result = {'status': 'requiredParams',
-                             'error_type': "[<class 'django.utils.datastructures.MultiValueDictKeyError'>]",
-                             'error_on': "[MultiValueDictKeyError('username',)]",
+                             'error_type': "CUSTOM",
+                             'error_on': "CUSTOM",
                              'success': '0'}
         response_2_result = {'status': 'DoesNotExist',
                              'error_type': "[<class 'django.contrib.auth.models.User.DoesNotExist'>]",

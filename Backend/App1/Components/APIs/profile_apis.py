@@ -133,7 +133,7 @@ def submitUserProfile(request):
                         status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 @limiter([BioLimiter])
 def userBio(request):
     """
@@ -144,9 +144,8 @@ def userBio(request):
         requiredParams
         DoesNotExist
     """
-    try:
-        username = request.data["username"]
-    except Exception:
+    username = get_data_or_none(request, "username")
+    if username is None:
         return error("requiredParams")
 
     try:
