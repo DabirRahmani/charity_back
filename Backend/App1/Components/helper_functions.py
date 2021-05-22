@@ -4,6 +4,9 @@ they are not APIs but they help APIs to work
 they're imported and used in views.py and *_apis.py
 
 contains:
+    client_post
+    client_get
+
     error
     simplify_email
     send_email
@@ -30,29 +33,34 @@ from secrets import token_hex
 from django.contrib.auth.models import User
 from App1.models import UserProfile
 
-from json import loads as load_json
-
 from django.test import Client
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 
 
+EMAIL_TOKEN_API = "0xAjE2MT6eiOi538574I1NiJ467f4378A9iOiJ821A5IiLC695e6b88FFxkZ1a997F"
+
+
 def client_post(url, json):
     if url in ['ResetPassword', 'ResetPasswordTokenBased',
                'VerifyEmail', 'VerifyEmailTokenBased']:
-        url = "0xAjE2MT6eiOi538574I1NiJ467f4378A9iOiJ821A5IiLC695e6b88FFxkZ1a997F/" + url
+        url = EMAIL_TOKEN_API + "/" + url
+
     response = Client().post('/App1/' + url, json, format='json')
     return response.data
 
 
 def client_get(url, json):
-    url = '/App1/' + url + "?"
+    if url in ['ResetPassword', 'ResetPasswordTokenBased',
+               'VerifyEmail', 'VerifyEmailTokenBased']:
+        url = EMAIL_TOKEN_API + "/" + url
 
+    url = '/App1/' + url + "?"
     for key, value in json.items():
         url = url + key + "=" + str(value) + "&"
 
     response = Client().get(url)
-    return load_json(response.content)
+    return response.json()
 
 
 def error(message, additional_data=None):

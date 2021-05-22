@@ -15,13 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from App1.Components.helper_functions import EMAIL_TOKEN_API
 
 # Statics:
 HOST = "127.0.0.1"
 PORT = "8000"
 
 TOKEN_API = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE2MTg3MTYzOTEsImV"
-EMAIL_TOKEN_API = "0xAjE2MT6eiOi538574I1NiJ467f4378A9iOiJ821A5IiLC695e6b88FFxkZ1a997F"
+EMAIL_TOKEN_API = EMAIL_TOKEN_API
 
 urlpatterns = [
     path('admin/', admin.site.urls),

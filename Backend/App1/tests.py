@@ -196,7 +196,7 @@ class AuthAPIsTestCase(TestCase):
     def test_api_logout(self):
         set_email_verified("donator_1")
         client_post('login', {"username": "donator_1", "password": "12345"})
-        response_1 = client_post('logout', {})
+        response_1 = client_get('logout', {})
         response_1_result = {'message': 'successfully logged out', 'success': '1'}
         self.assertEqual(response_1, response_1_result)
 
@@ -246,22 +246,22 @@ class AuthAPIsTestCase(TestCase):
         self.assertEqual(user_4.verified_email, True)
 
     def test_api_verifyEmailCodeBased(self):
-        response_1 = client_post('VerifyEmail', {})
-        response_2 = client_post('VerifyEmail', {"email": "superAdmin@gmail.com"})
-        response_3 = client_post('VerifyEmail', {"email": "superAdmin@gmail.com", "code": 1355})
-        response_4 = client_post('VerifyEmail', {"email": "superAdmin_2@gmail.com", "code": 1355})
-        response_5 = client_post('VerifyEmail', {"email": "superAdmin@gmail.com", "code": 2500})
-        response_6 = client_post('VerifyEmail', {"email": "admin@gmail.com", "code": 2500})
-        response_7 = client_post('VerifyEmail', {"email": "donator_2@gmail.com", "code": 2500})
-        response_8 = client_post('VerifyEmail', {"email": "needy@gmail.com", "code": 2500})
-        response_9 = client_post('VerifyEmail', {"email": "needy@gmail.com", "code": 2500})
+        response_1 = client_get('VerifyEmail', {})
+        response_2 = client_get('VerifyEmail', {"email": "superAdmin@gmail.com"})
+        response_3 = client_get('VerifyEmail', {"email": "superAdmin@gmail.com", "code": '1355'})
+        response_4 = client_get('VerifyEmail', {"email": "superAdmin_2@gmail.com", "code": 1355})
+        response_5 = client_get('VerifyEmail', {"email": "superAdmin@gmail.com", "code": 2500})
+        response_6 = client_get('VerifyEmail', {"email": "admin@gmail.com", "code": 2500})
+        response_7 = client_get('VerifyEmail', {"email": "donator_2@gmail.com", "code": 2500})
+        response_8 = client_get('VerifyEmail', {"email": "needy@gmail.com", "code": 2500})
+        response_9 = client_get('VerifyEmail', {"email": "needy@gmail.com", "code": 2500})
         response_1_result = {'status': 'requiredParams',
-                             'error_type': "[<class 'django.utils.datastructures.MultiValueDictKeyError'>]",
-                             'error_on': "[MultiValueDictKeyError('code',)]",
+                             'error_type': "[<class 'TypeError'>]",
+                             'error_on': '[TypeError("int() argument must be a string, a bytes-like object or a number, not \'NoneType\'",)]',
                              'success': '0'}
         response_2_result = {'status': 'requiredParams',
-                             'error_type': "[<class 'django.utils.datastructures.MultiValueDictKeyError'>]",
-                             'error_on': "[MultiValueDictKeyError('code',)]",
+                             'error_type': "[<class 'TypeError'>]",
+                             'error_on': '[TypeError("int() argument must be a string, a bytes-like object or a number, not \'NoneType\'",)]',
                              'success': '0'}
         response_3_result = {'status': 'privateCodeError',
                              'error_type': 'CUSTOM',
@@ -298,18 +298,18 @@ class AuthAPIsTestCase(TestCase):
         self.assertEqual(user_4.verified_email, True)
 
     def test_api_forgotPassword(self):
-        response_1 = client_post('ForgotPassword', {})
-        response_2 = client_post('ForgotPassword', {"email": "ehsan@k@gmail.com"})
-        response_3 = client_post('ForgotPassword', {"email": "ehsan.k@gmail.com"})
-        response_4 = client_post('ForgotPassword', {"email": "donator_1@gmail.com"})
-        response_5 = client_post('ForgotPassword', {"email": "needy@gmail.com"})
+        response_1 = client_get('ForgotPassword', {})
+        response_2 = client_get('ForgotPassword', {"email": "ehsan@k@gmail.com"})
+        response_3 = client_get('ForgotPassword', {"email": "ehsan.k@gmail.com"})
+        response_4 = client_get('ForgotPassword', {"email": "donator_1@gmail.com"})
+        response_5 = client_get('ForgotPassword', {"email": "needy@gmail.com"})
         set_email_verified("donator_1")
         set_email_verified("needy_1")
-        response_6 = client_post('ForgotPassword', {"email": "d.on.at...o.r_.1@gmail.com"})
-        response_7 = client_post('ForgotPassword', {"email": "nee.dy@gmail.com"})
+        response_6 = client_get('ForgotPassword', {"email": "d.on.at...o.r_.1@gmail.com"})
+        response_7 = client_get('ForgotPassword', {"email": "nee.dy@gmail.com"})
         response_1_result = {'status': 'requiredParams',
-                             'error_type': "[<class 'django.utils.datastructures.MultiValueDictKeyError'>]",
-                             'error_on': "[MultiValueDictKeyError('email',)]",
+                             'error_type': 'CUSTOM',
+                             'error_on': 'CUSTOM',
                              'success': '0'}
         response_2_result = {'status': 'invalidEmailError',
                              'error_type': 'CUSTOM',
@@ -440,19 +440,19 @@ class AuthAPIsTestCase(TestCase):
                                                    "pass1": "4444",
                                                    "pass2": "4444",
                                                    "code": "2021"})
-        client_post('ForgotPassword', {"email": "superAdmin@gmail.com"})
+        client_get('ForgotPassword', {"email": "superAdmin@gmail.com"})
         profile_1 = UserProfile.objects.get(email="superAdmin@gmail.com")
         response_6 = client_post('ResetPassword', {"email": "superAdmin@gmail.com",
                                                    "pass1": "SuperAdminPass",
                                                    "pass2": "SuperAdminPass",
                                                    "code": profile_1.reset_pass_code})
-        client_post('ForgotPassword', {"email": "donator_1@gmail.com"})
+        client_get('ForgotPassword', {"email": "donator_1@gmail.com"})
         profile_2 = UserProfile.objects.get(email="donator_1@gmail.com")
         response_7 = client_post('ResetPassword', {"email": "donator_1@gmail.com",
                                                    "pass1": "DonatorPass",
                                                    "pass2": "DonatorPass",
                                                    "code": profile_2.reset_pass_code})
-        client_post('ForgotPassword', {"email": "needy@gmail.com"})
+        client_get('ForgotPassword', {"email": "needy@gmail.com"})
         profile_3 = UserProfile.objects.get(email="needy@gmail.com")
         response_8 = client_post('ResetPassword', {"email": "needy@gmail.com",
                                                    "pass1": "NeedyPass",

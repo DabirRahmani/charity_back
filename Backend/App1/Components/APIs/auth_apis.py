@@ -175,7 +175,7 @@ def signup(request):
                             status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 @limiter([LogOutLimiter])
 def logout(request):
     """
@@ -214,7 +214,7 @@ def verifyEmailTokenBased(request):
         return error("privateTokenError")
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 @limiter([SignUpLimiter])
 def verifyEmailCodeBased(request):
     """
@@ -227,8 +227,8 @@ def verifyEmailCodeBased(request):
         privateCodeError
     """
     try:
-        private_code = int(request.data["code"])
-        email = request.data["email"]
+        private_code = int(request.GET.get("code"))
+        email = request.GET.get("email")
     except Exception:
         return error("requiredParams")
     else:
@@ -250,7 +250,7 @@ def verifyEmailCodeBased(request):
             return error("privateCodeError")
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 @limiter([ForgotPasswordLimiter])
 def forgotPassword(request):
     """
@@ -263,7 +263,9 @@ def forgotPassword(request):
         notVerifiedEmailError
     """
     try:
-        email = request.data["email"]
+        email = request.GET.get("email")
+        if email is None:
+            return error("requiredParams")
     except Exception:
         return error("requiredParams")
 
