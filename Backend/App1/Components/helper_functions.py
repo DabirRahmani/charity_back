@@ -30,6 +30,8 @@ from secrets import token_hex
 from django.contrib.auth.models import User
 from App1.models import UserProfile
 
+from json import loads as load_json
+
 from django.test import Client
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
@@ -43,9 +45,14 @@ def client_post(url, json):
     return response.data
 
 
-def client_get():
-    # response = Client().get(...)
-    pass
+def client_get(url, json):
+    url = '/App1/' + url + "?"
+
+    for key, value in json.items():
+        url = url + key + "=" + str(value) + "&"
+
+    response = Client().get(url)
+    return load_json(response.content)
 
 
 def error(message, additional_data=None):
@@ -137,10 +144,16 @@ def get_data_or_none(request, key):
     """
     returns None for not required fields
     """
-    try:
-        return request.data[key]
-    except Exception:
-        return None
+    if request.method == 'GET':
+        try:
+            return request.GET.get(key)
+        except Exception:
+            return None
+    elif request.method == 'POST':
+        try:
+            return request.data[key]
+        except Exception:
+            return None
 
 
 def set_email_verified(username):

@@ -127,7 +127,7 @@ def create_product(request):
                     status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def category_list(request):
     """
     It returns categories as a JSON
@@ -145,7 +145,7 @@ def category_list(request):
     return category_lister(result_set)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def subcategory_list(request):
     """
     It returns subcategories as a JSON
@@ -171,7 +171,7 @@ def subcategory_list(request):
     return subcategory_lister(result_set)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def product_list(request):
     """
     It returns products as a JSON
@@ -392,7 +392,7 @@ def delete_product(request):
                     status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def the_category(request):
     """
     passes an specific category according to it's id
@@ -402,7 +402,7 @@ def the_category(request):
         categoryNotFound
     """
     try:
-        id = int(request.data["id"])
+        id = int(request.GET.get("id"))
     except Exception:
         return error("requiredParams")
 
@@ -414,7 +414,7 @@ def the_category(request):
                     status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def the_subcategory(request):
     """
     passes an specific subcategory according to it's id
@@ -424,7 +424,7 @@ def the_subcategory(request):
         subcategoryNotFound
     """
     try:
-        id = int(request.data["id"])
+        id = int(request.GET.get("id"))
     except Exception:
         return error("requiredParams")
 
@@ -436,7 +436,7 @@ def the_subcategory(request):
                     status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def the_product(request):
     """
     passes an specific product according to it's id
@@ -446,7 +446,7 @@ def the_product(request):
         productNotFound
     """
     try:
-        id = int(request.data["id"])
+        id = int(request.GET.get("id"))
     except Exception:
         return error("requiredParams")
 
